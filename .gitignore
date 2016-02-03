@@ -26,7 +26,16 @@
 *.app
 *.i*86
 *.x86_64
-*.hex
 
 # Debug files
 *.dSYM/
+makefile
+*.d
+*.mk
+*.lss
+*.elf
+*.map
+
+# Release files
+*.eep
+*.hex
