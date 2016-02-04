@@ -9,10 +9,14 @@ int main() {
 	usartEnableTransmitter();
 	usartStdio();
 
-	printf("waiting for input");
+	printf("waiting for input\r\n");
 	do {
-		rcv = usartReceive();
+		printf("\r\nnot 10\r\n");
+		scanf("%d", &rcv);
 	} while(rcv != 10);
+
+	printf("\r\nrcv = %d\r\n", rcv);
+	while(1);
 
 	return 0;
 }
