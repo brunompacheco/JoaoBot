@@ -6,6 +6,7 @@
 //#include "twi_master.h"
 #include "i2cmaster.h"
 #include "l3g4200d.h"
+#include "adxl345.h"
 
 #define SAD 0x69<<1
 
@@ -17,27 +18,46 @@ int main() {
 
 	i2c_init();
 
-	l3g4200d_init();
-
-	l3g4200d_settemperatureref();
+	adxl345_init();
 
 	int16_t x = 0;
 	int16_t y = 0;
 	int16_t z = 0;
 
-	//_delay_ms(200);
-	while(1) {
+	adxl345_getrawdata(&x, &y, &z);
 
-	l3g4200d_getrawdata(&x,&y,&z);
-
+	do {
+		_delay_ms(200);
 	printf("==========\r\n");
-	printf("GX: %d\r\n", x);
-	printf("GY: %d\r\n", y);
-	printf("GZ: %d\r\n", z);
+	printf("AX: %d\r\n", x);
+	printf("AY: %d\r\n", y);
+	printf("AZ: %d\r\n", z);
 	printf("==========\r\n");
 
-	_delay_ms(200);
-	}
+	adxl345_getrawdata(&x, &y, &z);
+	} while(1);
+
+//	l3g4200d_init();
+//
+//	l3g4200d_settemperatureref();
+//
+//	int16_t x = 0;
+//	int16_t y = 0;
+//	int16_t z = 0;
+//
+//	//_delay_ms(200);
+//	while(1) {
+//
+//	l3g4200d_getrawdata(&x,&y,&z);
+//
+//	printf("==========\r\n");
+//	printf("GX: %d\r\n", x);
+//	printf("GY: %d\r\n", y);
+//	printf("GZ: %d\r\n", z);
+//	printf("==========\r\n");
+//
+//	_delay_ms(200);
+//	}
 
 	return 0;
 }
