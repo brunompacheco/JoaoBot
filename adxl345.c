@@ -48,10 +48,10 @@ void adxl345_getpitchroll(double ax, double ay, double az, double *pitch, double
  * initialize the accellerometer
  */
 void adxl345_init(void) {
-	if (i2c_rep_start(ADXL345_ADDR | I2C_WRITE)==1) printf("init_failed\n\r");
+	i2c_rep_start(ADXL345_ADDR | I2C_WRITE);
 	uint8_t range = ADXL345_RANGE | (ADXL345_FULLRANGE<<3);
-	if (i2c_write(0x31)==1) printf("init_failed\n\r");
-	if (i2c_write(range)==1) printf("init_failed\n\r");
+	i2c_write(0x31);
+	i2c_write(range);
 	//power register
     i2c_rep_start(ADXL345_ADDR | I2C_WRITE);
     i2c_write(0x2D);
@@ -162,75 +162,6 @@ void adxl345_getdata(double *ax, double *ay, double *az) {
 	*ax = (axraw/(double)ADXL345_RANGEVAL);
 	*ay = (ayraw/(double)ADXL345_RANGEVAL);
 	*az = (azraw/(double)ADXL345_RANGEVAL);
-	#endif
-
-	//this is a simple low pass filter
-	#if ADXL345_LOWPASSENABLED == 1
-	if(!firstread)
-		*ax = (0.75)*(axold) + (0.25)*(*ax);
-	axold = *ax;
-	if(!firstread)
-		*ay = (0.75)*(ayold) + (0.25)*(*ay);
-	ayold = *ay;
-	if(!firstread)
-		*az = (0.75)*(azold) + (0.25)*(*az);
-	azold = *az;
-	firstread = 0;
-	#endif
-}
-
-void adxl345_getrawdata(int16_t *ax, int16_t *ay, int16_t *az) {
-	int16_t axraw = 0;
-	int16_t ayraw = 0;
-	int16_t azraw = 0;
-
-	adxl345_waitfordataready();
-
-	//read axis data
-	int16_t temp;
-	//X
-	i2c_start_wait(ADXL345_ADDR | I2C_WRITE);
-	i2c_write(0x32);
-	i2c_rep_start(ADXL345_ADDR | I2C_READ);
-	axraw = i2c_readNak();
-	i2c_rep_start(ADXL345_ADDR | I2C_WRITE);
-	i2c_write(0x32+1);
-	i2c_rep_start(ADXL345_ADDR | I2C_READ);
-	temp = i2c_readNak();
-	axraw += (temp<<8);
-	//Y
-	i2c_rep_start(ADXL345_ADDR | I2C_WRITE);
-	i2c_write(0x34);
-	i2c_rep_start(ADXL345_ADDR | I2C_READ);
-	ayraw = i2c_readNak();
-	i2c_rep_start(ADXL345_ADDR | I2C_WRITE);
-	i2c_write(0x34+1);
-	i2c_rep_start(ADXL345_ADDR | I2C_READ);
-	temp = i2c_readNak();
-	ayraw += (temp<<8);
-	//Z
-	i2c_rep_start(ADXL345_ADDR | I2C_WRITE);
-	i2c_write(0x36);
-	i2c_rep_start(ADXL345_ADDR | I2C_READ);
-	azraw = i2c_readNak();
-	i2c_rep_start(ADXL345_ADDR | I2C_WRITE);
-	i2c_write(0x36+1);
-	i2c_rep_start(ADXL345_ADDR | I2C_READ);
-	temp = i2c_readNak();
-	azraw += (temp<<8);
-
-	i2c_stop();
-
-	//axisg = mx + b
-	//m is the scaling factor (g/counts), x is the sensor output (counts), and b is the count offset.
-	#if ADXL345_CALIBRATED == 1
-	*ax = (axraw/(double)ADXL345_CALRANGEVALX) + (double)ADXL345_CALOFFSETX;
-	*zy = (ayraw/(double)ADXL345_CALRANGEVALY) + (double)ADXL345_CALOFFSETY;
-	*az = (azraw/(double)ADXL345_CALRANGEVALZ) + (double)ADXL345_CALOFFSETZ;
-	#else
-	*ax = axraw;
-	*ay = ayraw;
-	*az = azraw;
 	#endif
 
 	//this is a simple low pass filter

@@ -115,7 +115,6 @@ void l3g4200d_getdata(double* gx, double* gy, double* gz) {
 	*gz = (gzraw-(double)l3g4200d_offsetz) * (double)L3G4200D_GAINZ;
 		#endif
 	#else
-	printf("CALIBRATED == 0\n\r");
 	*gx = (gxraw-(double)l3g4200d_offsetx) * (double)L3G4200D_GAIN;
 	*gy = (gyraw-(double)l3g4200d_offsety) * (double)L3G4200D_GAIN;
 	*gz = (gzraw-(double)l3g4200d_offsetz) * (double)L3G4200D_GAIN;

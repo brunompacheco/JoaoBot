@@ -20,44 +20,41 @@ int main() {
 
 	adxl345_init();
 
-	int16_t x = 0;
-	int16_t y = 0;
-	int16_t z = 0;
+	l3g4200d_init();
 
-	adxl345_getrawdata(&x, &y, &z);
+	l3g4200d_settemperatureref();
 
-	do {
-		_delay_ms(200);
-	printf("==========\r\n");
-	printf("AX: %d\r\n", x);
-	printf("AY: %d\r\n", y);
-	printf("AZ: %d\r\n", z);
-	printf("==========\r\n");
+	double ax = 0;
+	double ay = 0;
+	double az = 0;
+	double gx = 0;
+	double gy = 0;
+	double gz = 0;
 
-	adxl345_getrawdata(&x, &y, &z);
-	} while(1);
 
-//	l3g4200d_init();
-//
-//	l3g4200d_settemperatureref();
-//
-//	int16_t x = 0;
-//	int16_t y = 0;
-//	int16_t z = 0;
-//
-//	//_delay_ms(200);
-//	while(1) {
-//
-//	l3g4200d_getrawdata(&x,&y,&z);
-//
-//	printf("==========\r\n");
-//	printf("GX: %d\r\n", x);
-//	printf("GY: %d\r\n", y);
-//	printf("GZ: %d\r\n", z);
-//	printf("==========\r\n");
-//
-//	_delay_ms(200);
-//	}
+	adxl345_getdata(&ax, &ay, &az);
+	//adxl345_setoffset(ax, ay, az);
+	l3g4200d_getdata(&gx,&gy,&gz);
+	l3g4200d_setoffset(gx,gy,gz);
+
+	_delay_ms(200);
+	while(1) {
+
+	l3g4200d_getdata(&gx,&gy,&gz);
+	adxl345_getdata(&ax, &ay, &az);
+
+//	printf("%c", 27);
+//	printf("%c", '[');
+//	printf("%c", '2');
+//	printf("%c", 'J');
+//	printf("\033[2J\f");
+	printf("\e[1;1H\e[2J");
+	printf("GX: %.2f || AX: %.2f\r\n", gx, ax);
+	printf("GY: %.2f || AY: %.2f\r\n", gy, ay);
+	printf("GZ: %.2f || AZ: %.2f\r\n", gz, az);
+
+	_delay_ms(200);
+	}
 
 	return 0;
 }
