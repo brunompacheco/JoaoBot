@@ -13,7 +13,7 @@ Please refer to LICENSE file for licensing information.
 #include <util/delay.h>
 
 #include "l3g4200d.h"
-#include "LS_defines.h"
+
 #include "i2cmaster.h"
 
 //offset variables
@@ -99,12 +99,10 @@ void l3g4200d_getdata(double* gx, double* gy, double* gz) {
 	l3g4200d_getrawdata(&gxraw, &gyraw, &gzraw);
 
 	#if L3G4200D_CALIBRATED == 1 && L3G4200D_CALIBRATEDDOTEMPCOMP == 1
-	printf("CALIBRATED == 1 && L3G4200D_CALIBRATEDDOTEMPCOMP == 1\n\r");
 	l3g4200d_gtemp = l3g4200d_gtemp*0.95 + 0.05*l3g4200d_gettemperaturediff(); //filtered temperature compansation
 	#endif
 
 	#if L3G4200D_CALIBRATED == 1
-	printf("CALIBRATED == 1\n\r");
 		#if L3G4200D_CALIBRATEDDOTEMPCOMP == 1
 	*gx = (gxraw - (double)((L3G4200D_TEMPCOMPX*l3g4200d_gtemp) + (double)l3g4200d_offsetx)) * (double)L3G4200D_GAINX;
 	*gy = (gyraw - (double)((L3G4200D_TEMPCOMPY*l3g4200d_gtemp) + (double)l3g4200d_offsety)) * (double)L3G4200D_GAINY;
@@ -115,9 +113,9 @@ void l3g4200d_getdata(double* gx, double* gy, double* gz) {
 	*gz = (gzraw-(double)l3g4200d_offsetz) * (double)L3G4200D_GAINZ;
 		#endif
 	#else
-	*gx = (gxraw-(double)l3g4200d_offsetx) * (double)L3G4200D_GAIN;
-	*gy = (gyraw-(double)l3g4200d_offsety) * (double)L3G4200D_GAIN;
-	*gz = (gzraw-(double)l3g4200d_offsetz) * (double)L3G4200D_GAIN;
+	*gx = ((double)gxraw * (double)L3G4200D_GAIN)-l3g4200d_offsetx;
+	*gy = ((double)gyraw * (double)L3G4200D_GAIN)-l3g4200d_offsety;
+	*gz = ((double)gzraw * (double)L3G4200D_GAIN)-l3g4200d_offsetz;
 	#endif
 }
 
@@ -126,14 +124,14 @@ void l3g4200d_getdata(double* gx, double* gy, double* gz) {
  */
 void l3g4200d_init(void) {
 	//enable chip
-	if (i2c_start(L3G4200D_ADDR | I2C_WRITE)==1) printf("init_failed\n\r");
-	if (i2c_write(L3G4200D_CTRL_REG1)==1) printf("init_failed\n\r");
-	if (i2c_write(0x0F)==1) printf("init_failed\n\r"); //0x0F = 0b00001111, normal power mode, all axes enabled
+	i2c_start(L3G4200D_ADDR | I2C_WRITE);
+	i2c_write(L3G4200D_CTRL_REG1);
+	i2c_write(0x0F); //0x0F = 0b00001111, normal power mode, all axes enabled
 	i2c_stop();
 	//set range
-	if (i2c_start(L3G4200D_ADDR | I2C_WRITE)==1) printf("init_failed\n\r");
-	if (i2c_write(L3G4200D_CTRL_REG4)==1) printf("init_failed\n\r");
-	if (i2c_write(L3G4200D_RANGE<<4)==1) printf("init_failed\n\r");
+	i2c_start(L3G4200D_ADDR | I2C_WRITE);
+	i2c_write(L3G4200D_CTRL_REG4);
+	i2c_write(L3G4200D_RANGE<<4);
 	i2c_stop();
 
 	#if L3G4200D_CALIBRATED == 1
@@ -142,6 +140,10 @@ void l3g4200d_init(void) {
 	l3g4200d_offsety = L3G4200D_OFFSETY;
 	l3g4200d_offsetz = L3G4200D_OFFSETZ;
 	#endif
+
+//	l3g4200d_offsetx = 0.05;
+//	l3g4200d_offsety = -2.96;
+//	l3g4200d_offsetz = 0.58;
 
 	l3g4200d_settemperatureref();
 }

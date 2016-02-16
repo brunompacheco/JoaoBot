@@ -12,7 +12,6 @@ Please refer to LICENSE file for licensing information.
 #include <avr/io.h>
 #include <util/delay.h>
 
-#include "LS_defines.h"
 #include "adxl345.h"
 
 #if ADXL345_GETATTITUDE == 1
@@ -178,3 +177,4 @@ void adxl345_getdata(double *ax, double *ay, double *az) {
 	firstread = 0;
 	#endif
 }
+

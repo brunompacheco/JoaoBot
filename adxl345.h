@@ -73,7 +73,6 @@ Please refer to LICENSE file for licensing information.
 extern void adxl345_init(void);
 extern void adxl345_calibrateoffset(void);
 extern void adxl345_getdata(double *ax, double *ay, double *az);
-extern void adxl345_getrawdata(int16_t *ax, int16_t *ay, int16_t *az);
 #if ADXL345_GETATTITUDE == 1
 extern void adxl345_getpitchroll(double ax, double ay, double az, double *pitch, double *roll);
 #endif
