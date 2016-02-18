@@ -35,7 +35,7 @@
 #define FALSE   0
 #define TRUE    1
 #define HIGH    1
-#define LOW             0
+#define LOW     0
  
 // -----------------------------------------------------------------------------
 // Bit handling macro functions ------------------------------------------------

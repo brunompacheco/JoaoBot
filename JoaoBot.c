@@ -7,6 +7,7 @@
 #include "i2cmaster.h"
 #include "l3g4200d.h"
 #include "adxl345.h"
+#include "Motor.h"
 
 #define SAD 0x69<<1
 
@@ -22,6 +23,8 @@ volatile double angle = 0;
 ISR(TIMER0_OVF_vect);
 
 int main() {
+	motorInit();
+
 	usartInit(57600);
 	usartEnableReceiver();
 	usartEnableTransmitter();
