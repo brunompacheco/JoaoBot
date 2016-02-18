@@ -4,27 +4,7 @@
 
 
 void motorInit() {
-	setBit(DDRB, M1_DIR);
-	setBit(DDRD, M1_PWM);
-	setBit(DDRD, M2_DIR);
-	setBit(DDRD, M2_PWM);
 
-	clrBit(PORTB, M1_DIR);
-	clrBit(PORTD, M1_PWM);
-	clrBit(PORTD, M2_PWM);
-	clrBit(PORTD, M2_DIR);
-
-//	DDRD = 0b01111000;
-//	PORTD = 0x00;
-
-	timer0FastPWMMaxMode();
-	timer0ClockPrescaller64();
-	timer0OC0ANonInvertedMode();
-	timer0OC0BNonInvertedMode();
-	timer0SetCompareAValue(0);
-	timer0SetCompareBValue(0);
-	timer0DeactivateCompareAInterrupt();
-	timer0DeactivateCompareBInterrupt();
 }
 
 ////Acionamento apenas motor A
@@ -68,11 +48,11 @@ void motor2(int pwm2)
 void motor1(int pwm1)
 {
 	if(pwm1>=0){
-		clrBit(PORTD, M1_DIR);
+		clrBit(PORTB, M1_DIR);
 		timer0SetCompareBValue(pwm1);
 	}
 	else{
-		setBit(PORTD, M1_DIR);
+		setBit(PORTB, M1_DIR);
 		timer0SetCompareBValue(255+pwm1);
 	}
 }
