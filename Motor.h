@@ -11,8 +11,10 @@
 */
 
 
-//CONFIGURACAO DOS PORTS
-
+#define M1_PWM PD5
+#define M1_DIR PB0
+#define M2_PWM PD6
+#define M2_DIR PD7
 
 /*FUNCOES
  * dir(A/B): 1 ou 0
@@ -21,11 +23,5 @@
 
 void motorInit();
 
-//Acionamento apenas motor A
-void motorA(int pwmA, int dirA);
-//Acionamento apenas motor B
-void motorB(int pwmB, int dirB);
-//Acionamento motores AB (iguais)
-void motorAIB(int pwm, int dir);
-//Acionamento motores AB (diferentes)
-void motorADB(int pwmA, int dirA, int pwmB, int dirB);
+void motor2(int pwm2);
+void motor1(int pwm1);

@@ -25,11 +25,15 @@ volatile FloatType outmot = 0;
 
 volatile FloatType setpoint = 0;
 
-ISR(TIMER0_OVF_vect);
+ISR(TIMER2_OVF_vect);
 
 PidType PID;
 
+int i = 0;
+
 int main() {
+
+
 	motorInit();
 
 	usartInit(57600);
@@ -37,11 +41,11 @@ int main() {
 	usartEnableTransmitter();
 	usartStdio();
 
-	timer0ClockPrescaller256();
-	timer0NormalMode();
-	timer0OC0AOff();
-	timer0OC0BOff();
-	timer0ActivateOverflowInterrupt();
+	timer2ClockPrescaller256();
+	timer2NormalMode();
+	timer2OC2AOff();
+	timer2OC2BOff();
+	timer2ActivateOverflowInterrupt();
 
 
 	i2c_init();
@@ -58,25 +62,30 @@ int main() {
 
 	PID.mySetpoint = 0;
 
+	printf("\e[1;1H\e[2J");
+	printf("STARTED!\r\n");
 	_delay_ms(200);
 
+//	motor1(120);
+//	printf("Motor1 = 120\r\n");
+//	_delay_ms(500);
+//	motor1(-120);
+//	printf("Motor1 = -120\r\n");
+//	_delay_ms(500);
+//	motor1(120);
+//	printf("Motor1 = 120\r\n");
+//	_delay_ms(500);
+//	motor1(0);
+//	printf("Motor1 = 0\r\n");
+
 	sei();
-	while(1) {
 
-
-
-//	printf("%c", 27);
-//	printf("%c", '[');
-//	printf("%c", '2');
-//	printf("%c", 'J');
-
-//	printf("\033[2J\f");
-	}
+	while(1);
 
 	return 0;
 }
 
-ISR(TIMER0_OVF_vect) {
+ISR(TIMER2_OVF_vect) {
 	l3g4200d_getdata(&gx,&gy,&gz);
 	adxl345_getdata(&ax, &ay, &az);
 
@@ -88,7 +97,4 @@ ISR(TIMER0_OVF_vect) {
 	printf("\e[1;1H\e[2J");
 	printf("FUCKING ANGLE: %f\r\n", angle);
 	printf("PID output: %f\r\n", PID.myOutput);
-	printf("GX: %.2f\t|| AX: %.2f\r\n", gx, ax);
-	printf("GY: %.2f\t|| AY: %.2f\r\n", gy, ay);
-	printf("GZ: %.2f\t|| AZ: %.2f\r\n", gz, az);
 }
