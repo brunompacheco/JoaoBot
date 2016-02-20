@@ -9,6 +9,7 @@
 #include "adxl345.h"
 #include "Motor.h"
 #include "PID_v1.h"
+#include <math.h>
 
 #define SAD 0x69<<1
 
@@ -73,7 +74,7 @@ int main() {
 	l3g4200d_setoffset(0.11, -1.71, -0.46);
 	//l3g4200d_settemperatureref();
 
-	PID_init(&PID, 7,0,0, 0);
+	PID_init(&PID, 15,0.2,1, 0);
 	PID_SetMode(&PID, 1);
 	PID_SetOutputLimits(&PID, -255, 255);
 
@@ -118,13 +119,35 @@ ISR(TIMER2_OVF_vect) {
 	l3g4200d_getdata(&gx,&gy,&gz);
 	adxl345_getdata(&ax, &ay, &az);
 
-	angle = (0.7)*(angle + gy*0.004096) + (0.3)*((az*180)/3.14159);
+	angle = (0.25)*(angle + gy*0.004096) + (0.75)*((asin(az)*180)/3.14159);
 
 	PID.myInput = angle;// - angle_off;
 	PID_Compute(&PID);
 
-	motor1(PID.myOutput);
-	motor2(PID.myOutput);
+	if (angle > 45 || angle < -45) {
+		motor1(0);
+		motor2(0);
+	} else {
+//		if (angle > 10) {
+//			motor1(-175);
+//			motor2(-175);
+//		} else if (angle < -10) {
+//			motor1(175);
+//			motor2(175);
+//		} else if (angle > 5) {
+//			motor1(-80);
+//			motor2(-80);
+//		} else if (angle < -5) {
+//			motor1(80);
+//			motor2(80);
+//		} else if (angle > -5 && angle < 5) {
+//			motor1(0);
+//			motor2(0);
+//		}
+
+		motor1(PID.myOutput);
+		motor2(PID.myOutput);
+	}
 
 	printf("\e[1;1H\e[2J");
 	printf("FUCKING ANGLE: %f\r\n", angle);
